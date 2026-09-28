@@ -163,6 +163,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .
 .login form { text-align: left; }
 .login .btn { margin-top: 10px; }
 .login-foot { color: var(--ink-3); font-size: 13px; margin-top: 18px; }
+.login-demo { color: var(--accent-ink); background: var(--accent-soft); font-size: 13px; margin-top: 12px; padding: 8px 10px; border-radius: 10px; }
 
 /* ---------- Nagłówek ---------- */
 .topbar {

@@ -2,7 +2,10 @@
   'use strict';
 
   const CFG = window.KALENDARZ_CONFIG || {};
-  const DEMO = !CFG.API_URL;
+  // Tryb demo tylko przy uruchomieniu lokalnym – opublikowana strona zawsze korzysta z arkusza.
+  const LOCAL = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+  const DEMO = !CFG.API_URL && LOCAL;
+  const MISCONFIGURED = !CFG.API_URL && !LOCAL;
   const END = CFG.END_DATE || '2026-11-30';
   const AUTH_KEY = 'sowki-auth';
   const LAST_CHILD_KEY = 'sowki-last-child';
@@ -81,6 +84,7 @@
   async function api(action, data = {}) {
     const body = { action, password: state.password, ...data };
     if (DEMO) return demoApi(body);
+    if (MISCONFIGURED) throw new ApiError('Strona nie jest jeszcze podłączona do arkusza.', 'NET');
     let res;
     try {
       res = await fetch(CFG.API_URL, {
@@ -561,8 +565,8 @@
 
   async function setFinal(date, btn) {
     const ok = date
-      ? await confirmDialog({ title: 'Wybrać ten termin?', text: `${fmtFull(date)} zostanie ogłoszony jako termin spotkania. Głosowanie zostanie zamknięte – rodzice nie będą mogli już zmieniać wpisów (możesz je później otworzyć ponownie).`, ok: 'Wybierz i zamknij' })
-      : await confirmDialog({ title: 'Otworzyć głosowanie?', text: 'Wybrany termin zostanie anulowany, a rodzice znów będą mogli zaznaczać i edytować daty.', ok: 'Otwórz' });
+      ? await confirmDialog({ title: 'Wybrać ten termin?', text: `${fmtFull(date)} zostanie ogłoszony jako termin spotkania. Głosowanie zostanie zamknięte – poza Tobą nikt nie będzie mógł już zmieniać wpisów (możesz je później otworzyć ponownie).`, ok: 'Wybierz i zamknij' })
+      : await confirmDialog({ title: 'Otworzyć głosowanie?', text: 'Wybrany termin zostanie anulowany, a wszyscy znów będą mogli zaznaczać i edytować daty.', ok: 'Otwórz' });
     if (!ok) return;
     setBusy(btn, true);
     try {
@@ -601,6 +605,8 @@
     $('#loginScreen').hidden = which !== 'login';
     $('#app').hidden = which !== 'app';
     $('#demoBanner').hidden = !DEMO;
+    $('#loginDemo').hidden = !DEMO;
+    $('#configError').hidden = !MISCONFIGURED;
   }
 
   function logout() {

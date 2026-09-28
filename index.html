@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
   <!-- Ikony -->
@@ -44,7 +44,7 @@
     <div class="login-card">
       <svg class="login-owl" aria-hidden="true"><use href="#i-owl"/></svg>
       <h1 class="login-title" data-group>Sówki</h1>
-      <p class="login-lead">Wybierzmy wspólnie termin spotkania rodziców</p>
+      <p class="login-lead">Wybierzmy wspólnie termin spotkania</p>
       <form id="loginForm" novalidate>
         <label class="label" for="loginPassword">Hasło dostępu</label>
         <p class="hint">Hasło otrzymałeś/aś w wiadomości od organizatora.</p>
@@ -56,6 +56,8 @@
         <button class="btn btn-primary btn-block btn-lg" type="submit" id="loginSubmit">Wejdź</button>
       </form>
       <p class="login-foot">Organizator loguje się tym samym polem – hasłem administratora.</p>
+      <p class="login-demo" id="loginDemo" hidden>Tryb demo (lokalnie) – hasła testowe: <code>demo</code> i <code>admin</code>.</p>
+      <p class="field-error" id="configError" hidden>Strona nie jest jeszcze podłączona do arkusza (brak API_URL w config.js).</p>
     </div>
   </section>
 
@@ -67,7 +69,7 @@
           <svg class="brand-owl" aria-hidden="true"><use href="#i-owl"/></svg>
           <div class="brand-text">
             <strong data-group>Sówki</strong>
-            <span data-title>Spotkanie rodziców</span>
+            <span data-title>Spotkanie</span>
           </div>
         </div>
         <div class="top-actions">
@@ -85,7 +87,7 @@
     </header>
 
     <div class="demo-banner" id="demoBanner" hidden>
-      <strong>Tryb demo</strong> – dane zapisują się tylko w tej przeglądarce. Hasła testowe: <code>demo</code> (rodzic) i <code>admin</code>.
+      <strong>Tryb demo</strong> – dane zapisują się tylko w tej przeglądarce. Hasła testowe: <code>demo</code> (zwykły dostęp) i <code>admin</code>.
     </div>
 
     <main class="container" id="main">
@@ -216,7 +218,7 @@
   <div class="boot" id="boot"><svg class="boot-owl" aria-hidden="true"><use href="#i-owl"/></svg><p>Ładowanie…</p></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="config.js"></script>
-  <script src="app.js"></script>
+  <script src="config.js?v=3"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>

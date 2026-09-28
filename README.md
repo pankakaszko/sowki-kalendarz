@@ -1,8 +1,8 @@
-# Sówki – termin spotkania rodziców
+# Sówki – termin spotkania
 
-Prosty kalendarz, w którym rodzice zaznaczają dni pasujące na spotkanie. Strona działa na GitHub Pages, a dane trafiają do arkusza Google (przez Google Apps Script).
+Prosty kalendarz, w którym uczestnicy zaznaczają dni pasujące na wspólne spotkanie. Strona działa na GitHub Pages, a dane trafiają do arkusza Google (przez Google Apps Script).
 
-- Każdy rodzic może zaznaczyć wiele dni naraz. Przy zapisie trzeba podać imię dziecka.
+- Każdy może zaznaczyć wiele dni naraz. Przy zapisie trzeba podać imię dziecka.
 - Wszyscy mogą edytować wszystkie wpisy.
 - Zakładka **Wyniki** pokazuje, które dni pasują najbardziej, wraz z liczbą głosów i imionami.
 - Administrator może usuwać wpisy oraz zamknąć głosowanie, ogłaszając wybrany termin.
