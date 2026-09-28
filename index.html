@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#F7F3EC" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121826" media="(prefers-color-scheme: dark)">
+  <title>Sówki – termin spotkania</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%89%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ikony -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-owl" viewBox="0 0 64 64">
+      <path style="fill:var(--owl-body)" d="M13 9l9 8.5c6.5-3 13.5-3 20 0L51 9l-.5 21C52 50 45 58 32 58S12 50 13.5 30z"/>
+      <path style="fill:var(--owl-belly)" d="M32 36c-9 0-13 7-13 12 3 6 8 8 13 8s10-2 13-8c0-5-4-12-13-12z"/>
+      <path style="stroke:var(--owl-body)" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M26 45l2 2 2-2M34 45l2 2 2-2M30 50.5l2 2 2-2"/>
+      <circle cx="23.5" cy="28" r="8" fill="#fff"/><circle cx="40.5" cy="28" r="8" fill="#fff"/>
+      <circle cx="24.5" cy="28.5" r="3.6" fill="#1E2A3F"/><circle cx="39.5" cy="28.5" r="3.6" fill="#1E2A3F"/>
+      <circle cx="25.6" cy="27.3" r="1.1" fill="#fff"/><circle cx="40.6" cy="27.3" r="1.1" fill="#fff"/>
+      <path style="fill:var(--accent)" d="M29.5 35h5L32 39.5z"/>
+    </symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2M16 7l3 3M14 9l2 2"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.5L12 17.3l-5.9 3.2 1.3-6.5L2.5 9.4l6.6-.8z"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  </svg>
+
+  <!-- Ekran logowania -->
+  <section id="loginScreen" class="login" hidden>
+    <div class="login-card">
+      <svg class="login-owl" aria-hidden="true"><use href="#i-owl"/></svg>
+      <h1 class="login-title" data-group>Sówki</h1>
+      <p class="login-lead">Wybierzmy wspólnie termin spotkania rodziców</p>
+      <form id="loginForm" novalidate>
+        <label class="label" for="loginPassword">Hasło dostępu</label>
+        <p class="hint">Hasło otrzymałeś/aś w wiadomości od organizatora.</p>
+        <div class="pw-field">
+          <input class="input" type="password" id="loginPassword" autocomplete="current-password" autocapitalize="off" spellcheck="false" required>
+          <button type="button" class="pw-toggle" data-pw-toggle="loginPassword" aria-label="Pokaż hasło"><svg class="ico"><use href="#i-eye"/></svg></button>
+        </div>
+        <p class="field-error" id="loginError" role="alert"></p>
+        <button class="btn btn-primary btn-block btn-lg" type="submit" id="loginSubmit">Wejdź</button>
+      </form>
+      <p class="login-foot">Organizator loguje się tym samym polem – hasłem administratora.</p>
+    </div>
+  </section>
+
+  <!-- Aplikacja -->
+  <div id="app" hidden>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <svg class="brand-owl" aria-hidden="true"><use href="#i-owl"/></svg>
+          <div class="brand-text">
+            <strong data-group>Sówki</strong>
+            <span data-title>Spotkanie rodziców</span>
+          </div>
+        </div>
+        <div class="top-actions">
+          <span class="admin-badge" id="adminBadge" hidden>Admin</span>
+          <button class="icon-btn" id="refreshBtn" type="button" aria-label="Odśwież dane" title="Odśwież dane"><svg class="ico"><use href="#i-refresh"/></svg></button>
+          <button class="icon-btn" id="adminLoginBtn" type="button" aria-label="Zaloguj jako administrator" title="Zaloguj jako administrator"><svg class="ico"><use href="#i-key"/></svg></button>
+          <button class="icon-btn" id="logoutBtn" type="button" aria-label="Wyloguj" title="Wyloguj"><svg class="ico"><use href="#i-logout"/></svg></button>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist" aria-label="Sekcje">
+        <button class="tab" role="tab" id="tabbtn-calendar" data-tab="calendar" aria-controls="tab-calendar" aria-selected="true">Zaznacz daty</button>
+        <button class="tab" role="tab" id="tabbtn-stats" data-tab="stats" aria-controls="tab-stats" aria-selected="false">Wyniki</button>
+        <button class="tab" role="tab" id="tabbtn-entries" data-tab="entries" aria-controls="tab-entries" aria-selected="false">Wpisy <span class="tab-count" id="entriesCount">0</span></button>
+      </nav>
+    </header>
+
+    <div class="demo-banner" id="demoBanner" hidden>
+      <strong>Tryb demo</strong> – dane zapisują się tylko w tej przeglądarce. Hasła testowe: <code>demo</code> (rodzic) i <code>admin</code>.
+    </div>
+
+    <main class="container" id="main">
+      <div id="statusBanner"></div>
+
+      <!-- Kalendarz -->
+      <section class="tab-panel" id="tab-calendar" role="tabpanel" aria-labelledby="tabbtn-calendar">
+        <div id="editBanner"></div>
+        <ol class="steps" id="steps">
+          <li><span class="step-num">1</span><span>Stuknij wszystkie dni, w które <strong>możesz przyjść</strong> – im więcej, tym łatwiej znaleźć wspólny termin.</span></li>
+          <li><span class="step-num">2</span><span>Kliknij <strong>„Dalej”</strong> na dole ekranu i wpisz imię dziecka.</span></li>
+        </ol>
+        <div class="legend" aria-hidden="true">
+          <span><i class="lg lg-sel"></i>Twój wybór</span>
+          <span><i class="lg lg-heat"></i>Więcej głosów = ciemniejszy</span>
+          <span><i class="lg lg-count">3</i>Liczba głosów</span>
+          <span><i class="lg lg-final"><svg><use href="#i-star"/></svg></i>Wybrany termin</span>
+        </div>
+        <div class="months" id="months"></div>
+      </section>
+
+      <!-- Wyniki -->
+      <section class="tab-panel" id="tab-stats" role="tabpanel" aria-labelledby="tabbtn-stats" hidden>
+        <div class="summary" id="summary"></div>
+        <h2 class="section-title">Które terminy pasują najbardziej</h2>
+        <p class="section-sub" id="statsSub"></p>
+        <ol class="stats" id="statsList"></ol>
+        <div class="center" id="statsMore"></div>
+      </section>
+
+      <!-- Wpisy -->
+      <section class="tab-panel" id="tab-entries" role="tabpanel" aria-labelledby="tabbtn-entries" hidden>
+        <div class="entries-head">
+          <div>
+            <h2 class="section-title">Wszystkie wpisy</h2>
+            <p class="section-sub">Każdy może poprawić dowolny wpis – np. gdy zmieniły się plany.</p>
+          </div>
+          <label class="search">
+            <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
+            <input type="search" id="entriesSearch" placeholder="Szukaj po imieniu" aria-label="Szukaj po imieniu dziecka">
+          </label>
+        </div>
+        <div class="entries" id="entriesList"></div>
+      </section>
+    </main>
+
+    <div class="action-bar" id="actionBar" hidden>
+      <div class="action-bar-inner">
+        <div class="action-text" id="actionText"></div>
+        <div class="action-btns">
+          <button class="btn btn-ghost" type="button" id="actionSecondary">Wyczyść</button>
+          <button class="btn btn-primary" type="button" id="actionPrimary">Dalej <svg class="ico"><use href="#i-arrow"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: zapis -->
+  <dialog class="modal" id="saveDialog" aria-labelledby="saveTitle">
+    <form id="saveForm" novalidate>
+      <header class="modal-head">
+        <h2 id="saveTitle">Zapisz wybrane terminy</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Zamknij"><svg class="ico"><use href="#i-x"/></svg></button>
+      </header>
+      <div class="modal-body">
+        <p class="modal-label" id="saveCountLabel">Wybrane dni</p>
+        <ul class="chips" id="saveChips"></ul>
+
+        <div class="instruction" id="childInstruction">
+          <strong>Wpisz imię dziecka</strong>
+          <p>Bez imienia nie da się zapisać terminów. Dzięki niemu wiadomo, która rodzina zagłosowała, a Ty łatwo znajdziesz swój wpis, gdy zechcesz go poprawić.</p>
+          <p>Jeśli w grupie jest kilkoro dzieci o tym samym imieniu, dodaj pierwszą literę nazwiska, np. <em>Zosia K.</em></p>
+        </div>
+        <label class="label" for="childName">Imię dziecka <span class="req" aria-hidden="true">*</span></label>
+        <input class="input input-lg" id="childName" name="child" type="text" maxlength="60" autocomplete="off" autocapitalize="words" required aria-describedby="childInstruction childError">
+        <p class="field-error" id="childError" role="alert"></p>
+
+        <div class="dup" id="dupNotice" hidden>
+          <p id="dupText"></p>
+          <div class="dup-btns">
+            <button type="button" class="btn btn-primary" id="dupMerge">Dopisz do tego wpisu</button>
+            <button type="button" class="btn btn-ghost" id="dupNew">Zapisz jako osobny wpis</button>
+          </div>
+        </div>
+      </div>
+      <footer class="modal-foot" id="saveFoot">
+        <button type="button" class="btn btn-ghost" data-close>Anuluj</button>
+        <button type="submit" class="btn btn-primary" id="saveSubmit">Zapisz</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Modal: potwierdzenie -->
+  <dialog class="modal modal-sm" id="confirmDialog" aria-labelledby="confirmTitle">
+    <form method="dialog">
+      <header class="modal-head"><h2 id="confirmTitle"></h2></header>
+      <div class="modal-body"><p id="confirmText"></p></div>
+      <footer class="modal-foot">
+        <button class="btn btn-ghost" value="cancel">Anuluj</button>
+        <button class="btn btn-primary" value="ok" id="confirmOk">OK</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Modal: logowanie admina -->
+  <dialog class="modal modal-sm" id="adminDialog" aria-labelledby="adminTitle">
+    <form id="adminForm" novalidate>
+      <header class="modal-head">
+        <h2 id="adminTitle">Logowanie administratora</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Zamknij"><svg class="ico"><use href="#i-x"/></svg></button>
+      </header>
+      <div class="modal-body">
+        <p class="hint">Administrator może usuwać wpisy i zamknąć głosowanie, ogłaszając wybrany termin.</p>
+        <label class="label" for="adminPassword">Hasło administratora</label>
+        <div class="pw-field">
+          <input class="input" type="password" id="adminPassword" autocomplete="current-password" autocapitalize="off" spellcheck="false" required>
+          <button type="button" class="pw-toggle" data-pw-toggle="adminPassword" aria-label="Pokaż hasło"><svg class="ico"><use href="#i-eye"/></svg></button>
+        </div>
+        <p class="field-error" id="adminError" role="alert"></p>
+      </div>
+      <footer class="modal-foot">
+        <button type="button" class="btn btn-ghost" data-close>Anuluj</button>
+        <button type="submit" class="btn btn-primary" id="adminSubmit">Zaloguj</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <div class="boot" id="boot"><svg class="boot-owl" aria-hidden="true"><use href="#i-owl"/></svg><p>Ładowanie…</p></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
