@@ -71,8 +71,8 @@ const ACTIONS = {
   },
 
   remove: function (body, role) {
-    if (role !== 'admin') throw fail_('Tylko administrator może usuwać wpisy.', 'FORBIDDEN');
     withLock_(function () {
+      if (getFinalDate_() && role !== 'admin') throw fail_('Głosowanie jest już zamknięte.', 'CLOSED');
       const sheet = sheet_();
       const row = findRow_(sheet, String(body.id || ''));
       if (row) sheet.deleteRow(row);

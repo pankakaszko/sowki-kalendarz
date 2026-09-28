@@ -422,3 +422,13 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .
 @media (prefers-color-scheme: dark) {
   .avatar { background: hsl(var(--h) 30% 26%); color: hsl(var(--h) 70% 82%); }
 }
+
+/* ---------- Okno „Zmień wpis” ---------- */
+.edit-days { margin-top: 18px; }
+.edit-days span { color: var(--ink-2); font-weight: 700; }
+.months-compact { grid-template-columns: 1fr; gap: 12px; }
+.months-compact .month { background: transparent; box-shadow: none; border: 1px solid var(--line); padding: 12px 10px 10px; }
+.months-compact .month h3 { font-size: 16px; margin-bottom: 8px; }
+.months-compact .day { background: var(--surface-2); font-size: 14px; }
+.months-compact .day.is-selected { background: var(--primary); }
+#editDialog .modal-foot { justify-content: space-between; }

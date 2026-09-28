@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
   <!-- Ikony -->
@@ -123,7 +123,7 @@
         <div class="entries-head">
           <div>
             <h2 class="section-title">Wszystkie wpisy</h2>
-            <p class="section-sub">Każdy może poprawić dowolny wpis – np. gdy zmieniły się plany.</p>
+            <p class="section-sub">Każdy może zmienić lub usunąć dowolny wpis.</p>
           </div>
           <label class="search">
             <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
@@ -180,13 +180,36 @@
     </form>
   </dialog>
 
+  <!-- Modal: zmiana wpisu -->
+  <dialog class="modal" id="editDialog" aria-labelledby="editTitle">
+    <form id="editForm" novalidate>
+      <header class="modal-head">
+        <h2 id="editTitle">Zmień wpis</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Zamknij"><svg class="ico"><use href="#i-x"/></svg></button>
+      </header>
+      <div class="modal-body">
+        <label class="label" for="editName">Imię dziecka</label>
+        <input class="input input-lg" id="editName" type="text" maxlength="60" autocomplete="off" autocapitalize="words" required>
+        <p class="field-error" id="editNameError" role="alert"></p>
+        <p class="label edit-days">Pasujące dni <span id="editCount"></span></p>
+        <p class="hint">Stuknij dzień, żeby go dodać albo usunąć.</p>
+        <div class="months months-compact" id="editMonths"></div>
+        <p class="field-error" id="editDatesError" role="alert"></p>
+      </div>
+      <footer class="modal-foot">
+        <button type="button" class="btn btn-danger-ghost" id="editDelete"><svg class="ico"><use href="#i-trash"/></svg>Usuń wpis</button>
+        <button type="submit" class="btn btn-primary" id="editSave">Zapisz</button>
+      </footer>
+    </form>
+  </dialog>
+
   <!-- Modal: potwierdzenie -->
   <dialog class="modal modal-sm" id="confirmDialog" aria-labelledby="confirmTitle">
     <form method="dialog">
       <header class="modal-head"><h2 id="confirmTitle"></h2></header>
       <div class="modal-body"><p id="confirmText"></p></div>
       <footer class="modal-foot">
-        <button class="btn btn-ghost" value="cancel">Anuluj</button>
+        <button class="btn btn-ghost" value="cancel" id="confirmCancel">Anuluj</button>
         <button class="btn btn-primary" value="ok" id="confirmOk">OK</button>
       </footer>
     </form>
@@ -200,7 +223,7 @@
         <button type="button" class="icon-btn" data-close aria-label="Zamknij"><svg class="ico"><use href="#i-x"/></svg></button>
       </header>
       <div class="modal-body">
-        <p class="hint">Administrator może usuwać wpisy i zamknąć głosowanie, ogłaszając wybrany termin.</p>
+        <p class="hint">Administrator może zamknąć głosowanie, ogłaszając wybrany termin.</p>
         <label class="label" for="adminPassword">Hasło administratora</label>
         <div class="pw-field">
           <input class="input" type="password" id="adminPassword" autocomplete="current-password" autocapitalize="off" spellcheck="false" required>
@@ -218,7 +241,7 @@
   <div class="boot" id="boot"><svg class="boot-owl" aria-hidden="true"><use href="#i-owl"/></svg><p>Ładowanie…</p></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="config.js?v=3"></script>
-  <script src="app.js?v=3"></script>
+  <script src="config.js?v=5"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>

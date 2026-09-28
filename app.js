@@ -4,7 +4,7 @@
   const CFG = window.KALENDARZ_CONFIG || {};
   // Tryb demo tylko przy uruchomieniu lokalnym – opublikowana strona zawsze korzysta z arkusza.
   const LOCAL = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
-  const DEMO = !CFG.API_URL && LOCAL;
+  const DEMO = LOCAL && (!CFG.API_URL || new URLSearchParams(location.search).has('demo'));
   const MISCONFIGURED = !CFG.API_URL && !LOCAL;
   const END = CFG.END_DATE || '2026-11-30';
   const AUTH_KEY = 'sowki-auth';
@@ -20,7 +20,6 @@
     entries: [],
     finalDate: null,
     selected: new Set(),
-    editingId: null,
     tab: 'calendar',
     search: '',
     showAllStats: false,
@@ -147,7 +146,7 @@
         break;
       }
       case 'remove':
-        if (role !== 'admin') throw new ApiError('Tylko administrator może usuwać wpisy.', 'FORBIDDEN');
+        if (db.finalDate && role !== 'admin') throw new ApiError('Głosowanie jest już zamknięte.', 'CLOSED');
         db.entries = db.entries.filter((x) => x.id !== body.id);
         break;
       case 'setFinal':
@@ -166,12 +165,11 @@
     state.finalDate = res.settings?.finalDate || null;
     if (res.role) state.role = res.role;
     state.lastSync = Date.now();
-    if (state.editingId && !state.entries.some((e) => e.id === state.editingId)) {
-      state.editingId = null;
-      state.selected.clear();
-      toast('Edytowany wpis został w międzyczasie usunięty.', true);
+    if (editId && !state.entries.some((e) => e.id === editId)) {
+      $('#editDialog').close();
+      toast('Ten wpis został w międzyczasie usunięty.', true);
     }
-    if (!canEdit() && !state.editingId) state.selected.clear();
+    if (!canEdit()) state.selected.clear();
     render();
   }
 
@@ -224,15 +222,13 @@
     return out;
   }
 
-  const editingEntry = () => state.entries.find((e) => e.id === state.editingId) || null;
-
   // ---------- Renderowanie ----------
   function render() {
     $('#adminBadge').hidden = !isAdmin();
     $('#adminLoginBtn').hidden = isAdmin();
     $('#entriesCount').textContent = state.entries.length;
     renderStatus();
-    renderEditBanner();
+    renderLockBanner();
     renderCalendar();
     renderStats();
     renderEntries();
@@ -255,28 +251,19 @@
       </div>`;
   }
 
-  function renderEditBanner() {
-    const el = $('#editBanner');
-    const e = editingEntry();
-    $('#steps').hidden = !!e || !canEdit();
-    if (!e) {
-      el.innerHTML = !canEdit()
-        ? `<div class="banner banner-edit"><svg class="ico"><use href="#i-lock"/></svg><div class="banner-body"><p>Głosowanie jest zamknięte – kalendarz pokazuje już tylko wyniki.</p></div></div>`
-        : '';
-      return;
-    }
-    el.innerHTML = `
-      <div class="banner banner-edit">
-        <svg class="ico"><use href="#i-edit"/></svg>
-        <div class="banner-body">
-          <p>Edytujesz wpis <strong style="display:inline;font-size:inherit">${esc(e.child)}</strong>. Zaznacz lub odznacz dni, a potem kliknij „Zapisz zmiany”.</p>
-        </div>
-        <button class="btn btn-ghost btn-sm" type="button" data-cancel-edit>Anuluj edycję</button>
-      </div>`;
+  function renderLockBanner() {
+    $('#steps').hidden = !canEdit();
+    $('#editBanner').innerHTML = canEdit() ? ''
+      : `<div class="banner banner-edit"><svg class="ico"><use href="#i-lock"/></svg><div class="banner-body"><p>Głosowanie jest zamknięte – kalendarz pokazuje już tylko wyniki.</p></div></div>`;
   }
 
   function renderCalendar() {
-    const votes = tally();
+    $('#months').innerHTML = monthsHtml(state.selected, true);
+  }
+
+  // Siatka miesięcy; showVotes=false w oknie edycji wpisu.
+  function monthsHtml(selected, showVotes) {
+    const votes = showVotes ? tally() : new Map();
     const max = Math.max(1, ...[...votes.values()].map((a) => a.length));
     const locked = !canEdit();
     const t = today();
@@ -293,14 +280,14 @@
         const td = Number(t.slice(8));
         startDay = Math.max(1, td - (offset + td - 1) % 7);
         const prefix = `${y}-${pad(m + 1)}-`;
-        const hiddenUsed = [...state.selected].some((d) => d.startsWith(prefix) && Number(d.slice(8)) < startDay);
+        const hiddenUsed = [...selected].some((d) => d.startsWith(prefix) && Number(d.slice(8)) < startDay);
         if (hiddenUsed) startDay = 1;
       }
       html += '<span></span>'.repeat(startDay === 1 ? offset : 0);
       for (let d = startDay; d <= count; d++) {
         const iso = `${y}-${pad(m + 1)}-${pad(d)}`;
         const n = votes.get(iso)?.length || 0;
-        const sel = state.selected.has(iso);
+        const sel = selected.has(iso);
         const wd = (offset + d - 1) % 7;
         const isFinal = iso === state.finalDate;
         if (!selectable(iso) && !sel && !isFinal && !n) {
@@ -322,7 +309,7 @@
       }
       html += '</div></section>';
     }
-    $('#months').innerHTML = html;
+    return html;
   }
 
   function renderStats() {
@@ -391,15 +378,15 @@
     $('#entriesList').innerHTML = list.map((e) => {
       const h = hue(nameKey(e.child));
       return `
-        <article class="entry${e.id === state.editingId ? ' is-editing' : ''}">
+        <article class="entry">
           <div class="entry-head">
             <span class="avatar" style="--h:${h}" aria-hidden="true">${esc(e.child.charAt(0).toUpperCase())}</span>
             <div><h3>${esc(e.child)}</h3><small>${nTerms(e.dates.length)}</small></div>
           </div>
           <ul class="chips">${e.dates.map((d) => `<li class="chip${d === state.finalDate ? ' is-final' : d < t ? ' is-past' : ''}">${esc(fmtShort(d))}</li>`).join('')}</ul>
           ${canEdit() ? `<div class="entry-actions">
-            ${isAdmin() ? `<button class="btn btn-danger-ghost btn-sm" type="button" data-delete="${esc(e.id)}"><svg class="ico"><use href="#i-trash"/></svg>Usuń</button>` : ''}
-            <button class="btn btn-ghost btn-sm" type="button" data-edit="${esc(e.id)}"><svg class="ico"><use href="#i-edit"/></svg>Edytuj</button>
+            <button class="btn btn-danger-ghost btn-sm" type="button" data-delete="${esc(e.id)}"><svg class="ico"><use href="#i-trash"/></svg>Usuń</button>
+            <button class="btn btn-ghost btn-sm" type="button" data-edit="${esc(e.id)}"><svg class="ico"><use href="#i-edit"/></svg>Zmień</button>
           </div>` : ''}
         </article>`;
     }).join('');
@@ -407,18 +394,12 @@
 
   function renderActionBar() {
     const n = state.selected.size;
-    const e = editingEntry();
-    const show = state.tab === 'calendar' && canEdit() && (n > 0 || !!e);
+    const show = state.tab === 'calendar' && canEdit() && n > 0;
     $('#actionBar').hidden = !show;
     if (!show) return;
     const sorted = [...state.selected].sort();
     const preview = sorted.slice(0, 4).map(fmtShort).join(' · ') + (sorted.length > 4 ? ' …' : '');
-    $('#actionText').innerHTML = e
-      ? `<strong>${esc(e.child)}</strong> · ${nDays(n)}<small>${esc(preview) || 'Nie zaznaczono żadnego dnia'}</small>`
-      : `Zaznaczono <strong>${nDays(n)}</strong><small>${esc(preview)}</small>`;
-    $('#actionSecondary').textContent = e ? 'Anuluj' : 'Wyczyść';
-    $('#actionPrimary').innerHTML = e ? 'Zapisz zmiany' : 'Dalej <svg class="ico"><use href="#i-arrow"/></svg>';
-    $('#actionPrimary').disabled = n === 0;
+    $('#actionText').innerHTML = `Zaznaczono <strong>${nDays(n)}</strong><small>${esc(preview)}</small>`;
   }
 
   // ---------- Akcje ----------
@@ -442,37 +423,69 @@
     renderActionBar();
   }
 
-  function startEdit(id) {
+  // Okno „Zmień wpis” – imię i dni w jednym miejscu.
+  let editId = null;
+  let editSel = new Set();
+
+  function openEditDialog(id) {
     const e = state.entries.find((x) => x.id === id);
     if (!e) return;
-    state.editingId = id;
-    state.selected = new Set(e.dates);
-    render();
-    setTab('calendar');
-    toast(`Edytujesz wpis: ${e.child}`);
+    editId = id;
+    editSel = new Set(e.dates);
+    $('#editName').value = e.child;
+    $('#editName').classList.remove('is-invalid');
+    $('#editNameError').textContent = '';
+    $('#editDatesError').textContent = '';
+    renderEditMonths();
+    $('#editDialog').showModal();
+    $('#editDialog .modal-body').scrollTop = 0;
   }
 
-  function cancelEdit() {
-    state.editingId = null;
-    state.selected.clear();
-    render();
+  function renderEditMonths() {
+    $('#editMonths').innerHTML = monthsHtml(editSel, false);
+    $('#editCount').textContent = `(${editSel.size})`;
+  }
+
+  async function saveEdit(ev) {
+    ev.preventDefault();
+    const input = $('#editName');
+    const child = normName(input.value);
+    if (!child) {
+      input.classList.add('is-invalid');
+      $('#editNameError').textContent = 'Wpisz imię dziecka.';
+      input.focus();
+      return;
+    }
+    if (!editSel.size) {
+      $('#editDatesError').textContent = 'Zaznacz co najmniej jeden dzień – albo usuń cały wpis.';
+      return;
+    }
+    const btn = $('#editSave');
+    setBusy(btn, true);
+    try {
+      const res = await api('save', { id: editId, child, dates: [...editSel].sort() });
+      $('#editDialog').close();
+      applyData(res);
+      toast('Zmiany zapisane.');
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setBusy(btn, false);
+    }
   }
 
   // Modal zapisu
   let pendingDup = null;
   function openSaveDialog() {
     if (!state.selected.size) { toast('Zaznacz co najmniej jeden dzień.'); return; }
-    const e = editingEntry();
     const sorted = [...state.selected].sort();
-    $('#saveTitle').textContent = e ? 'Zapisz zmiany we wpisie' : 'Zapisz wybrane terminy';
     $('#saveCountLabel').textContent = `Wybrane dni (${sorted.length})`;
     $('#saveChips').innerHTML = sorted.map((d) => `<li class="chip">${esc(fmtShort(d))}</li>`).join('');
     const input = $('#childName');
-    input.value = e ? e.child : (store.get(LAST_CHILD_KEY) || '');
+    input.value = store.get(LAST_CHILD_KEY) || '';
     input.classList.remove('is-invalid');
     $('#childError').textContent = '';
     hideDup();
-    $('#saveSubmit').textContent = e ? 'Zapisz zmiany' : 'Zapisz';
     $('#saveDialog').showModal();
     input.focus();
     if (input.value) input.select();
@@ -493,7 +506,7 @@
       input.focus();
       return;
     }
-    let id = state.editingId;
+    let id = null;
     let dates = [...state.selected].sort();
 
     if (!id && !mergeInto && !forceNew) {
@@ -520,12 +533,10 @@
     try {
       const res = await api('save', { id, child, dates });
       store.set(LAST_CHILD_KEY, child);
-      const wasEdit = !!state.editingId;
-      state.editingId = null;
       state.selected.clear();
       $('#saveDialog').close();
       applyData(res);
-      toast(wasEdit || mergeInto ? 'Zmiany zapisane. Dziękujemy!' : 'Zapisano! Dziękujemy za głos 🦉');
+      toast(mergeInto ? 'Zmiany zapisane. Dziękujemy!' : 'Zapisano! Dziękujemy za głos 🦉');
     } catch (err) {
       handleError(err);
     } finally {
@@ -541,21 +552,36 @@
     const okBtn = $('#confirmOk');
     okBtn.textContent = ok;
     okBtn.className = `btn ${danger ? 'btn-danger' : 'btn-primary'}`;
-    dlg.returnValue = '';
+    const cancelBtn = $('#confirmCancel');
     dlg.showModal();
+    // Reagujemy bezpośrednio na przyciski – zdarzenie „close” bywa opóźniane przez przeglądarkę.
     return new Promise((resolve) => {
-      dlg.addEventListener('close', () => resolve(dlg.returnValue === 'ok'), { once: true });
+      let settled = false;
+      const done = (val) => {
+        if (settled) return;
+        settled = true;
+        okBtn.onclick = cancelBtn.onclick = dlg.oncancel = dlg.onclose = null;
+        if (dlg.open) dlg.close();
+        resolve(val);
+      };
+      okBtn.onclick = (ev) => { ev.preventDefault(); done(true); };
+      cancelBtn.onclick = (ev) => { ev.preventDefault(); done(false); };
+      dlg.oncancel = (ev) => { ev.preventDefault(); done(false); };
+      dlg.onclose = () => done(false);
     });
   }
 
   async function removeEntry(id, btn) {
     const e = state.entries.find((x) => x.id === id);
     if (!e) return;
-    const ok = await confirmDialog({ title: 'Usunąć wpis?', text: `Wpis „${e.child}” (${nTerms(e.dates.length)}) zostanie trwale usunięty.`, ok: 'Usuń', danger: true });
+    const ok = await confirmDialog({ title: `Usunąć wpis „${e.child}”?`, text: 'Tej operacji nie da się cofnąć.', ok: 'Tak, usuń', danger: true });
     if (!ok) return;
     setBusy(btn, true);
     try {
-      applyData(await api('remove', { id }));
+      const res = await api('remove', { id });
+      if ($('#editDialog').open) $('#editDialog').close();
+      applyData(res);
+      setBusy(btn, false);
       toast('Wpis usunięty.');
     } catch (err) {
       handleError(err);
@@ -611,7 +637,7 @@
 
   function logout() {
     store.del(AUTH_KEY);
-    Object.assign(state, { password: null, role: null, entries: [], finalDate: null, editingId: null });
+    Object.assign(state, { password: null, role: null, entries: [], finalDate: null });
     state.selected.clear();
     for (const d of document.querySelectorAll('dialog[open]')) d.close();
     $('#loginPassword').value = '';
@@ -700,7 +726,7 @@
     for (const dlg of document.querySelectorAll('dialog')) {
       dlg.addEventListener('click', (ev) => {
         // Okno zapisu nie zamyka się po stuknięciu w tło, żeby nie zgubić wpisanego imienia.
-        if (ev.target.closest('[data-close]') || (ev.target === dlg && dlg.id !== 'saveDialog')) dlg.close();
+        if (ev.target.closest('[data-close]') || (ev.target === dlg && dlg.id !== 'saveDialog' && dlg.id !== 'editDialog')) dlg.close();
       });
     }
 
@@ -721,7 +747,6 @@
 
     $('#actionPrimary').addEventListener('click', openSaveDialog);
     $('#actionSecondary').addEventListener('click', () => {
-      if (state.editingId) { cancelEdit(); return; }
       state.selected.clear();
       renderCalendar();
       renderActionBar();
@@ -730,13 +755,30 @@
     $('#main').addEventListener('click', (ev) => {
       const t = ev.target.closest('button');
       if (!t) return;
-      if (t.dataset.edit) startEdit(t.dataset.edit);
+      if (t.dataset.edit) openEditDialog(t.dataset.edit);
       else if (t.dataset.delete) removeEntry(t.dataset.delete, t);
       else if (t.dataset.final) setFinal(t.dataset.final, t);
       else if ('reopen' in t.dataset) setFinal(null, t);
-      else if ('cancelEdit' in t.dataset) cancelEdit();
       else if ('toggleStats' in t.dataset) { state.showAllStats = !state.showAllStats; renderStats(); }
       else if (t.dataset.goto) setTab(t.dataset.goto);
+    });
+
+    $('#editForm').addEventListener('submit', saveEdit);
+    $('#editDelete').addEventListener('click', (ev) => removeEntry(editId, ev.currentTarget));
+    $('#editMonths').addEventListener('click', (ev) => {
+      const btn = ev.target.closest('button.day');
+      if (!btn || btn.classList.contains('is-locked')) return;
+      const iso = btn.dataset.date;
+      if (!editSel.has(iso) && !selectable(iso)) { toast('Ten dzień już minął.'); return; }
+      if (editSel.has(iso)) editSel.delete(iso); else editSel.add(iso);
+      btn.classList.toggle('is-selected', editSel.has(iso));
+      btn.setAttribute('aria-pressed', String(editSel.has(iso)));
+      $('#editCount').textContent = `(${editSel.size})`;
+      $('#editDatesError').textContent = '';
+    });
+    $('#editName').addEventListener('input', () => {
+      $('#editName').classList.remove('is-invalid');
+      $('#editNameError').textContent = '';
     });
 
     $('#entriesSearch').addEventListener('input', (ev) => { state.search = ev.target.value; renderEntries(); });
