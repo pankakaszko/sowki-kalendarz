@@ -617,7 +617,7 @@
   async function onLogin(ev) {
     ev.preventDefault();
     const input = $('#loginPassword');
-    const pw = input.value;
+    const pw = input.value.trim();
     if (!pw) { $('#loginError').textContent = 'Wpisz hasło.'; input.focus(); return; }
     const btn = $('#loginSubmit');
     setBusy(btn, true);
@@ -642,7 +642,7 @@
   async function onAdminLogin(ev) {
     ev.preventDefault();
     const input = $('#adminPassword');
-    const pw = input.value;
+    const pw = input.value.trim();
     const err = $('#adminError');
     if (!pw) { err.textContent = 'Wpisz hasło administratora.'; input.focus(); return; }
     const btn = $('#adminSubmit');
