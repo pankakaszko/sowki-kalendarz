@@ -5,5 +5,6 @@ window.KALENDARZ_CONFIG = {
   API_URL: 'https://script.google.com/macros/s/AKfycbwRQt7tpOyhpxxN1Lmjr7LcUPtFKd4gbxSkT9zg8eVJM8MAG0DgF93MlHL2f616ODtkfQ/exec',
   GROUP: 'Sówki',
   TITLE: 'Spotkanie',
+  START_DATE: '2026-10-01',
   END_DATE: '2026-11-30',
 };

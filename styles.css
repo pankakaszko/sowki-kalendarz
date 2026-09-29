@@ -462,3 +462,4 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .
   .login { align-items: flex-start; padding-top: 8vh; }
   .login-reviews { max-width: 340px; position: static; max-height: none; }
 }
+.reviews-sub { color: var(--ink-2); font-size: 13px; margin-top: 2px; }

@@ -6,6 +6,7 @@
   const LOCAL = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
   const DEMO = LOCAL && (!CFG.API_URL || new URLSearchParams(location.search).has('demo'));
   const MISCONFIGURED = !CFG.API_URL && !LOCAL;
+  const START = CFG.START_DATE || '2026-10-01';
   const END = CFG.END_DATE || '2026-11-30';
   const AUTH_KEY = 'sowki-auth';
   const LAST_CHILD_KEY = 'sowki-last-child';
@@ -34,7 +35,8 @@
   const toIso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   const fromIso = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
   const today = () => toIso(new Date());
-  const selectable = (iso) => iso >= today() && iso <= END;
+  const firstDay = () => (today() > START ? today() : START);
+  const selectable = (iso) => iso >= firstDay() && iso <= END;
   const isAdmin = () => state.role === 'admin';
   const isClosed = () => !!state.finalDate;
   const canEdit = () => !isClosed() || isAdmin();
@@ -212,7 +214,7 @@
   }
 
   function monthsInRange() {
-    const start = fromIso(today() < END ? today() : END);
+    const start = fromIso(firstDay() < END ? firstDay() : END);
     const end = fromIso(END);
     const out = [];
     for (let y = start.getFullYear(), m = start.getMonth(); y < end.getFullYear() || (y === end.getFullYear() && m <= end.getMonth());) {
