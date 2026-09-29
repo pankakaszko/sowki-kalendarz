@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=6">
+  <link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body>
   <!-- Ikony -->
@@ -59,6 +59,7 @@
       <p class="login-demo" id="loginDemo" hidden>Tryb demo (lokalnie) – hasła testowe: <code>demo</code> i <code>admin</code>.</p>
       <p class="field-error" id="configError" hidden>Strona nie jest jeszcze podłączona do arkusza (brak API_URL w config.js).</p>
     </div>
+    <aside class="sidebar login-reviews" data-reviews aria-label="Opinie"></aside>
   </section>
 
   <!-- Aplikacja -->
@@ -135,55 +136,7 @@
       </section>
       </div>
 
-      <aside class="sidebar" aria-labelledby="reviewsTitle">
-        <div class="reviews-head">
-          <p class="reviews-place">Przedszkole nr 61 · Warszawa</p>
-          <h2 id="reviewsTitle">Opinie o kalendarzu</h2>
-          <div class="reviews-score">
-            <strong>5,0</strong>
-            <span class="stars" aria-label="5 na 5 gwiazdek"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></span>
-            <span>7 opinii</span>
-          </div>
-        </div>
-        <ul class="reviews">
-          <li class="review">
-            <span class="stars" aria-label="5 na 5 gwiazdek"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></span>
-            <p>„Najlepszy kalendarz do umawiania spotkań grupy Sówki, rocznik 2019! Kliknęłam trzy dni i gotowe.”</p>
-            <footer><strong>Mama z grupy Sówki</strong></footer>
-          </li>
-          <li class="review is-teacher">
-            <span class="stars" aria-label="5 na 5 gwiazdek"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></span>
-            <p>„Wreszcie żadnych karteczek przy szatni i list na drzwiach sali. Polecam całym sercem!”</p>
-            <footer><strong>Pani Patrycja</strong><span class="review-role">Wychowawczyni</span></footer>
-          </li>
-          <li class="review">
-            <span class="stars" aria-label="5 na 5 gwiazdek"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></span>
-            <p>„Zaznaczyłem terminy szybciej, niż moje dziecko założyło buty. A to jest rekord.”</p>
-            <footer><strong>Tata z grupy Sówki</strong></footer>
-          </li>
-          <li class="review is-teacher">
-            <span class="stars" aria-label="5 na 5 gwiazdek"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></span>
-            <p>„Ustaliliśmy termin szybciej niż to, kto przynosi tort na urodziny. Sówki zasługują na najlepsze!”</p>
-            <footer><strong>Pani Marta</strong><span class="review-role">Wychowawczyni</span></footer>
-          </li>
-          <li class="review">
-            <span class="stars" aria-label="5 na 5 gwiazdek"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></span>
-            <p>„Nawet ja dałam radę, i to bez dzwonienia do wnuczki. Pięć gwiazdek, a dałabym sześć.”</p>
-            <footer><strong>Babcia na odbiorze</strong></footer>
-          </li>
-          <li class="review">
-            <span class="stars" aria-label="5 na 5 gwiazdek"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></span>
-            <p>„Pierwszy raz w historii przedszkola nr 61 zagłosowałem przed terminem.”</p>
-            <footer><strong>Rodzic, który zawsze się spóźnia</strong></footer>
-          </li>
-          <li class="review">
-            <span class="stars" aria-label="5 na 5 gwiazdek"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></span>
-            <p>„Hu-hu! Hu-hu-hu! (tłum.: „Bardzo intuicyjne”)”</p>
-            <footer><strong>Sówka, maskotka grupy</strong></footer>
-          </li>
-        </ul>
-        <p class="reviews-note">Opinie z przymrużeniem oka 😉</p>
-      </aside>
+      <aside class="sidebar" data-reviews aria-label="Opinie"></aside>
     </main>
 
     <div class="action-bar" id="actionBar" hidden>
@@ -290,10 +243,49 @@
     </form>
   </dialog>
 
+  <template id="reviewsTpl">
+        <div class="reviews-head">
+          <p class="reviews-place">Przedszkole nr 61 · Warszawa</p>
+          <h2 id="reviewsTitle">Opinie o kalendarzu</h2>
+          <div class="reviews-score">
+            <strong>5,0</strong>
+            <span class="stars" aria-label="5 na 5 gwiazdek"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></span>
+            <span>5 opinii</span>
+          </div>
+        </div>
+        <ul class="reviews">
+          <li class="review">
+            <span class="stars" aria-label="5 na 5 gwiazdek"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></span>
+            <p>„Najlepszy kalendarz do umawiania spotkań grupy Sówki, rocznik 2019! Kliknęłam trzy dni i gotowe.”</p>
+            <footer><strong>Mama z grupy Sówki</strong></footer>
+          </li>
+          <li class="review">
+            <span class="stars" aria-label="5 na 5 gwiazdek"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></span>
+            <p>„Zaznaczyłem terminy szybciej, niż moje dziecko założyło buty. A to jest rekord.”</p>
+            <footer><strong>Tata z grupy Sówki</strong></footer>
+          </li>
+          <li class="review">
+            <span class="stars" aria-label="5 na 5 gwiazdek"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></span>
+            <p>„Nawet ja dałam radę, i to bez dzwonienia do wnuczki. Pięć gwiazdek, a dałabym sześć.”</p>
+            <footer><strong>Babcia na odbiorze</strong></footer>
+          </li>
+          <li class="review">
+            <span class="stars" aria-label="5 na 5 gwiazdek"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></span>
+            <p>„Pierwszy raz w historii przedszkola nr 61 zagłosowałem przed terminem.”</p>
+            <footer><strong>Rodzic, który zawsze się spóźnia</strong></footer>
+          </li>
+          <li class="review">
+            <span class="stars" aria-label="5 na 5 gwiazdek"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></span>
+            <p>„Hu-hu! Hu-hu-hu! (tłum.: „Bardzo intuicyjne”)”</p>
+            <footer><strong>Sówka, maskotka grupy</strong></footer>
+          </li>
+        </ul>
+  </template>
+
   <div class="boot" id="boot"><svg class="boot-owl" aria-hidden="true"><use href="#i-owl"/></svg><p>Ładowanie…</p></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="config.js?v=6"></script>
-  <script src="app.js?v=6"></script>
+  <script src="config.js?v=7"></script>
+  <script src="app.js?v=7"></script>
 </body>
 </html>

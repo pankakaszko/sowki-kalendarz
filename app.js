@@ -699,6 +699,7 @@
 
   // ---------- Zdarzenia ----------
   function bind() {
+    for (const el of document.querySelectorAll('[data-reviews]')) el.append($('#reviewsTpl').content.cloneNode(true));
     for (const el of document.querySelectorAll('[data-group]')) el.textContent = CFG.GROUP || el.textContent;
     for (const el of document.querySelectorAll('[data-title]')) el.textContent = CFG.TITLE || el.textContent;
 
